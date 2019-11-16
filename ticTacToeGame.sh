@@ -24,6 +24,7 @@ function displayBoard()
 	echo "|     |     |     |"
 	echo "|" ${position[6]}"   | "${position[7]}"   |" ${position[8]}"   |"
 	echo "|     |     |     |"
+	echo ${position[6]}
 }
 function main()
 {
@@ -37,15 +38,53 @@ function main()
 	firstTurn=$((RANDOM%2))
 	if [ $firstTurn -eq 1 ]
 	then
-		firstTurn="Player"
+		firstTurn=$playerLetter
 	else
-		firstTurn="Computer"
+		firstTurn=$computerLetter
 	fi
-	playGame $firstTurn	
+	playGame $firstTurn $playerLetter $computerLetter	
 }
 function playGame()
 {
-	firstTurn=$1
-	displayBoard
+	turn=$1
+	actualPosition="$( displayBoard )"
+	determineWinnerTieOrChangeTurn $actualPosition $turn
+}
+function determineWinnerTieOrChangeTurn()
+{
+	boardPosition=$1
+	Turn=$2
+	if [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[2]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ]
+	then 
+		result="win"
+	elif [ ${boardPosition[6]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[6]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
+	then
+		result="win"
+	elif [ ${boardPosition[0]} -eq 1 ] || [ ${boardPosition[1]} -eq 2 ] || [ ${boardPosition[2]} -eq 3 ] ||[ ${boardPosition[3]} -eq 4 ] || [ ${boardPosition[4]} -eq 5 ] || [ ${boardPosition[5]} -eq 6 ][ ${boardPosition[6]} -eq 7 ] || [ ${boardPosition[7]} -eq 8 ] || [ ${boardPosition[8]} -eq 9 ]
+	then
+		result="next turn"
+	else
+		result="tie"
+	fi
+	
 }
 main
+ 
