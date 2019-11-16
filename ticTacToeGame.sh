@@ -36,5 +36,12 @@ function playGame()
 	else
 		computerLetter=x
 	fi
+	firstTurn=$((RANDOM%2))
+	if [ $firstTurn -eq 1 ]
+	then
+		firstTurn="Player"
+	else
+		firstTurn="Computer"
+	fi
 }
 playGame
