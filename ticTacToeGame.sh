@@ -24,11 +24,9 @@ function displayBoard()
 	echo "|     |     |     |"
 	echo "|" ${position[6]}"   | "${position[7]}"   |" ${position[8]}"   |"
 	echo "|     |     |     |"
-			
 }
-function playGame()
+function main()
 {
-	displayBoard
 	read -p "Player Choose letter(x or 0) for playing " playerLetter
 	if [ $playerLetter == x ] || [ $playerLetter == X ]
 	then
@@ -43,5 +41,11 @@ function playGame()
 	else
 		firstTurn="Computer"
 	fi
+	playGame $firstTurn	
 }
-playGame
+function playGame()
+{
+	firstTurn=$1
+	displayBoard
+}
+main
