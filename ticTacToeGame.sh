@@ -1,4 +1,4 @@
-#!/bin/bash -x 
+#!/bin/bash 
 
 echo "******Wel-Come To TicTacToe Game******"
 
@@ -15,6 +15,7 @@ position[8]=9
 
 function displayBoard()
 {
+	position[$(($1-1))]=$2
 	echo "|     |     |     |"
 	echo "|" ${position[0]}"   | "${position[1]}"   |" ${position[2]}"   |"
 	echo "|_____|_____|_____|"
@@ -35,6 +36,7 @@ function main()
 	else
 		computerLetter=x
 	fi
+
 	firstTurn=$((RANDOM%2))
 	if [ $firstTurn -eq 1 ]
 	then
@@ -42,49 +44,13 @@ function main()
 	else
 		firstTurn=$computerLetter
 	fi
-	playGame $firstTurn $playerLetter $computerLetter	
-}
-function playGame()
-{
-	turn=$1
-	actualPosition="$( displayBoard )"
-	determineWinnerTieOrChangeTurn $actualPosition $turn
-}
-function determineWinnerTieOrChangeTurn()
-{
-	boardPosition=$1
-	Turn=$2
-	if [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[2]} -eq $Turn ]
+
+	if [ $firstTurn == $playerLetter ]
 	then
-		result="win"
-	elif [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ]
-	then 
-		result="win"
-	elif [ ${boardPosition[6]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[6]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq 1 ] || [ ${boardPosition[1]} -eq 2 ] || [ ${boardPosition[2]} -eq 3 ] ||[ ${boardPosition[3]} -eq 4 ] || [ ${boardPosition[4]} -eq 5 ] || [ ${boardPosition[5]} -eq 6 ][ ${boardPosition[6]} -eq 7 ] || [ ${boardPosition[7]} -eq 8 ] || [ ${boardPosition[8]} -eq 9 ]
-	then
-		result="next turn"
-	else
-		result="tie"
+		read -p "Enter the cell number" pos
+		displayBoard $pos $playerLetter
 	fi
-	
 }
+
 main
  
