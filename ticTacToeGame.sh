@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x 
 
 echo "******Wel-Come To TicTacToe Game******"
 
@@ -26,4 +26,15 @@ function displayBoard()
 	echo "|     |     |     |"
 			
 }
-displayBoard
+function playGame()
+{
+	displayBoard
+	read -p "Player Choose letter(x or 0) for playing " playerLetter
+	if [ $playerLetter == x ] || [ $playerLetter == X ]
+	then
+		computerLetter=0
+	else
+		computerLetter=x
+	fi
+}
+playGame
