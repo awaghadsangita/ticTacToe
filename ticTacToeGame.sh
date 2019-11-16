@@ -1,4 +1,4 @@
-#!/bin/bash -x 
+#!/bin/bash 
 
 echo "******Wel-Come To TicTacToe Game******"
 
@@ -15,6 +15,7 @@ position[8]=9
 
 function displayBoard()
 {
+	position[$(($1-1))]=$2
 	echo "|     |     |     |"
 	echo "|" ${position[0]}"   | "${position[1]}"   |" ${position[2]}"   |"
 	echo "|_____|_____|_____|"
@@ -37,15 +38,17 @@ function main()
 	firstTurn=$((RANDOM%2))
 	if [ $firstTurn -eq 1 ]
 	then
-		firstTurn="Player"
+		firstTurn=$playerLetter
 	else
-		firstTurn="Computer"
+		firstTurn=$computerLetter
 	fi
-	playGame $firstTurn	
+	
+	if [ $firstTurn == $playerLetter ]
+	then
+		read -p "Enter the cell number" pos
+		displayBoard $pos $playerLetter
+	fi
+
 }
-function playGame()
-{
-	firstTurn=$1
-	displayBoard
-}
+
 main
