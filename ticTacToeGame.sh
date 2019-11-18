@@ -1,33 +1,34 @@
-#!/bin/bash -x 
+#!/bin/bash 
 
 echo "******Wel-Come To TicTacToe Game******"
 
-position[0]=1
-position[1]=2
-position[2]=3
-position[3]=4
-position[4]=5
-position[5]=6
-position[6]=7
-position[7]=8
-position[8]=9
+declare -a position
 
+function initializedBoardArray()
+{
+	for(( i=0; i<9; i++ ))
+	do
+		position[$i]=$(($i+1))
+	done
+
+}
 
 function displayBoard()
 {
-	echo "|     |     |     |"
-	echo "|" ${position[0]}"   | "${position[1]}"   |" ${position[2]}"   |"
-	echo "|_____|_____|_____|"
-	echo "|     |     |     |"
-	echo "|" ${position[3]}"   | "${position[4]}"   |" ${position[5]}"   |"
-	echo "|_____|_____|_____|"
-	echo "|     |     |     |"
-	echo "|" ${position[6]}"   | "${position[7]}"   |" ${position[8]}"   |"
-	echo "|     |     |     |"
-	echo ${position[6]}
+	i=0
+	for(( counter=0; counter<3; counter++ ))
+	do
+		echo "|     |     |     |"
+		echo "|" ${position[$((i))]}"   | "${position[$((i+1))]}"   |" ${position[$((i+2))]}"   |"
+		echo "|_____|_____|_____|"
+#		echo "|     |     |     |"
+		i=$(($((i+1))+2))
+	done
 }
+
 function main()
 {
+	initializedBoardArray
 	read -p "Player Choose letter(x or 0) for playing " playerLetter
 	if [ $playerLetter == x ] || [ $playerLetter == X ]
 	then
@@ -39,52 +40,104 @@ function main()
 	if [ $firstTurn -eq 1 ]
 	then
 		firstTurn=$playerLetter
+		playGame $firstTurn $playerLetter $computerLetter
 	else
 		firstTurn=$computerLetter
+		playGame $firstTurn $playerLetter $computerLetter
 	fi
-	playGame $firstTurn $playerLetter $computerLetter	
+
 }
 function playGame()
 {
-	turn=$1
-	actualPosition="$( displayBoard )"
-	determineWinnerTieOrChangeTurn $actualPosition $turn
+	toContinue=0
+	turn=$2
+	while [ $toContinue == 0 ]
+	do
+		read -p "Enter the Cell Number" pos
+		if [ ${position[$((pos-1))]} == $2 ] || [ ${position[$((pos-1))]} == $3 ]
+		then
+			toContinue=0
+		else
+			position[$((pos-1))]=$turn 
+			displayBoard
+			toContinue="$( determineWinnerTieOrChangeTurn $turn )"
+		fi
+	done
+	
 }
+
 function determineWinnerTieOrChangeTurn()
 {
-	boardPosition=$1
-	Turn=$2
-	if [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[2]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ]
-	then 
-		result="win"
-	elif [ ${boardPosition[6]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[3]} -eq $Turn ] && [ ${boardPosition[6]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[1]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[7]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq $Turn ] && [ ${boardPosition[4]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[2]} -eq $Turn ] && [ ${boardPosition[5]} -eq $Turn ] && [ ${boardPosition[8]} -eq $Turn ]
-	then
-		result="win"
-	elif [ ${boardPosition[0]} -eq 1 ] || [ ${boardPosition[1]} -eq 2 ] || [ ${boardPosition[2]} -eq 3 ] ||[ ${boardPosition[3]} -eq 4 ] || [ ${boardPosition[4]} -eq 5 ] || [ ${boardPosition[5]} -eq 6 ][ ${boardPosition[6]} -eq 7 ] || [ ${boardPosition[7]} -eq 8 ] || [ ${boardPosition[8]} -eq 9 ]
-	then
-		result="next turn"
-	else
-		result="tie"
-	fi
+	Turn=$1
+	rowResult="$( checkRow $1 )"
+	columnResult="$( checkColumn $1 )"
+	diagonalsResult="$( checkDiagonal $1 )"
 	
+	if [ $rowResult == "win" ] || [ $columnResult == "win" ] || [ $diagonalsResult == "win" ]
+	then
+		flag=1
+	else
+		tieResult="$( tie )"		
+		if [ $tieResult == next ]
+		then
+			flag=0
+		fi
+	fi
+	echo $flag
+}
+function checkRow()
+{
+	letter=$1
+	result1=next
+	for(( i=0; i<3; i++ ))
+	do
+		if [ ${position[$i]} == $letter ] && [ ${position[$i+1]} == $letter ] && [ ${position[$i+2]} == $letter ]
+		then
+			result1="win"
+			break;
+		fi
+	done
+	echo $result1
+}
+function checkColumn()
+{
+	letter=$1
+	result2=next
+	for(( i=0; i<3; i++ ))
+	do
+		if [ ${position[$i]} == $letter ] && [ ${position[$i+3]} == $letter ] && [ ${position[$i+6]} == $letter ]
+		then
+			result2="win"
+			break;
+		fi
+	done
+	echo $result2
+}
+function checkDiagonal()
+{
+	letter=$1
+	i=0
+	result3=next
+	if [ ${position[$i]} == $letter ] && [ ${position[$i+4]} == $letter ] &&  [ ${position[$i+8]} == $letter ]
+	then
+		result3="win"
+	fi
+	if [ ${position[$i+2]} == $letter ] && [ ${position[$i+4]} == $letter ] &&  [ ${position[$i+6]} == $letter ]
+	then
+		result3="win"
+	fi
+	echo $result3
+}
+
+function tie()
+{
+	i=0
+	result4=tie
+	if [ ${position[$i]} == 1 ] || [ ${position[$i+1]} == 2 ] ||  [ ${position[$i+2]} == 3 ] || [ ${position[$i+3]} == 4 ] || [ ${position[$i+5]} == 5 ] || [ ${position[$i+6]} == 6 ] || [ ${position[$i+7]} == 7 ] || [ ${position[$i+8]} == 8 ] || [ ${position[$i+9]} == 9 ]
+	then
+		result4="next"
+	fi
+	echo $result4
 }
 main
  
