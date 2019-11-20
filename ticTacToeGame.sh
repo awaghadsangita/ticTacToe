@@ -6,7 +6,6 @@ declare -a position
 
 function initializedBoardArray()
 {
-
 	for(( i=1; i<=9; i++ ))
 	do
 		position[$i]=$i
@@ -22,11 +21,10 @@ function displayBoard()
 		echo "|     |     |     |"
 		echo "|" ${position[$((i))]}"   | "${position[$((i+1))]}"   |" ${position[$((i+2))]}"   |"
 		echo "|_____|_____|_____|"
-
+#		echo "|     |     |     |"
 		i=$(($((i+1))+2))
 	done
 	echo "\n"
-
 }
 
 function main()
@@ -39,6 +37,7 @@ function main()
 	else
 		computerLetter=x
 	fi
+
 	firstTurn=$((RANDOM%2))
 	if [ $firstTurn -eq 1 ]
 	then
@@ -53,6 +52,7 @@ function main()
 function playGame()
 {
 	toContinue=0
+	turn=$2
 	computerPlay=play
 	userPlay=play
 	while [ $toContinue == 0 ]
@@ -70,12 +70,60 @@ function playGame()
 				echo "PLAYER WON"
 				break;
 			fi
+				
+
 		done
 		if [ $winner == true ]
 		then
 			break;
 		fi
+		computerPlay="play"
+		while [ $computerPlay == play ] 
+		do
+			computerPosition="$( possibleWinningPosition $1 $2 $3 )"
+			
+			if [ ${position[$computerPosition]} == $computerPosition ]
+			then
+				position[$computerPosition]=$3
+				displayBoard
+				winner1="$( determineWinnerTieOrChangeTurn $3 )"
+				computerPlay=dontPlay
+				if [ $winner1 == true ]
+				then
+					echo "COMPUTER WON"
+					break
+				fi
+			fi
+		done  
+		if [ $winner1 == true ]
+		then
+			break
+		fi
 	done
+
+}
+
+function possibleWinningPosition(){
+	rowPosition="$( winAtRowPosition $1 $2 $3)"
+	columnPosition="$( WinnerAtColoumnPosition $1 $2 $3 )"
+	diagonalPosition="$( winAtDiagonalPosition $1 $2 $3 )"
+
+	if [[ $rowPosition -gt 0 ]]
+	then
+		pos=$rowPosition
+		positionToReplace=0;
+	elif [[ $columnPosition -gt 0 ]]
+	then
+		pos=$columnPosition
+		positionToReplace=0;
+	elif [[ $diagonalPosition -gt 0 ]]
+	then
+		pos=$diagonalPosition
+		positionToReplace=0;
+	else
+		pos=$((RANDOM%9+1))
+	fi
+	echo $pos
 }
 
 function determineWinnerTieOrChangeTurn()
@@ -145,6 +193,83 @@ function checkDiagonal()
 
 }
 
+function winAtRowPosition(){
+	local computerLetter=$3
+	local playerLetter=$2
+	local row=0;
+	local winner=false;
+	for (( count=1; count<=3; count++ ))
+	do
+		row=$(( $row+1 ))
+		if [[ ${position[$row]} == ${position[$row+1]} ]] || [[ ${position[$row+1]} == ${position[$row+2]} ]] || [[ ${position[$row+2]} == ${position[$row]} ]]
+		then
+			for (( innerLoopCounter=$row; innerLoopCounter<=$row+2; innerLoopCounter++ ))
+			do
+				if [[ ${position[$innerLoopCounter]} -ne $computerLetter ]]
+				then
+					positionToReplace=$innerLoopCounter
+				fi
+			done
+		else
+			row=$(( $row+2 ))
+		fi
+	done
+	echo $positionToReplace
+}
+
+function WinnerAtColoumnPosition(){
+	local playerLetter=$2
+	local computerLetter=$3
+	local column=0;
+	local winner=false;
+	for (( count=1; count<=3; count++ ))
+	do
+		column=$(( $column+1 ))
+		if [[ ${position[$column]} == ${position[$column+3]} ]] || [[ ${position[$column+3]} == ${position[$column+6]} ]] || [[ ${position[$column+6]} == ${position[$column]} ]] 
+		then
+			for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
+			do
+				if [[ ${position[$column]} -ne $computerLetter ]]
+				then
+					positionToReplace=$column
+				fi
+				column=$(( $column+3 ))
+			done
+		fi
+	done
+	echo $positionToReplace
+}
+
+function winAtDiagonalPosition(){
+	local playerLetter=$2
+	local computerLetter=$3
+	local diagCount=1;
+	local count=1;
+	local winner=false;
+	if [[ ${position[$diagCount]} == ${position[$diagCount+4]} ]] || [[ ${position[$diagCount+4]} == ${position[$diagCount+8]} ]] || [[ ${position[$diagCount+8]} == ${position[$diagCount]} ]]
+	then
+		for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
+		do
+			if [[ ${position[$diagCount]} -ne $computerLetter ]]
+			then
+				positionToReplace=$diagCount
+			fi
+			diagCount=$(( $diagCount+4 ))
+		done
+	elif [[ ${position[$count+2]} == ${position[$count+4]} ]] || [[ ${position[$count+4]} == ${position[$count+6]} ]] || [[ ${position[$count+6]} == ${position[$count+2]} ]]
+	then
+		for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
+		do
+			count=$(( $count+2 ))
+			if [[ ${position[$count]} -ne $computerLetter ]]
+			then
+				positionToReplace=$count
+			fi
+		done
+	fi
+	echo $positionToReplace
+}
+
 function tie()
 {
 	i=0
@@ -158,10 +283,10 @@ function tie()
 	done
 	echo $result4
 }
+
+
 function rowWinningPosition()
 {
-	return $((RANDOM%9+1))
-	
-
+	echo $((RANDOM%9+1))
 }
 main
