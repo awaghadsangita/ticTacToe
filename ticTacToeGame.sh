@@ -109,20 +109,20 @@ function possibleWinningPosition(){
 
 	if [[ $rowPosition -gt 0 ]]
 	then
-		pos=$rowPosition
+		winningPosition=$rowPosition
 		positionToReplace=0;
 	elif [[ $columnPosition -gt 0 ]]
 	then
-		pos=$columnPosition
+		winningPosition=$columnPosition
 		positionToReplace=0;
 	elif [[ $diagonalPosition -gt 0 ]]
 	then
-		pos=$diagonalPosition
+		winningPosition=$diagonalPosition
 		positionToReplace=0;
 	else
-		pos=$((RANDOM%9+1))
+		winningPosition=$((RANDOM%9+1))
 	fi
-	echo $pos
+	echo $winningPosition
 }
 
 function determineWinnerTieOrChangeTurn()
