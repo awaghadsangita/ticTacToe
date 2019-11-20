@@ -48,55 +48,112 @@ function main()
 }
 function playGame()
 {
-	toContinue=0
-	turn=$2
-	computerPlay=play
-	userPlay=play
-	while [ $toContinue == 0 ]
+	local playerLetter=$2
+	local computerLetter=$3
+	play=1
+	while [ true ]
 	do
-		userPlay="play"
-		while [ $userPlay == play ]
-		do
-			read -p "Enter the Cell Number" pos
-			position[$pos]=$2 
-			displayBoard
-			winner="$( determineWinnerTieOrChangeTurn $2 )"
-			userPlay=dontPlay				
-			if [ $winner == true ]
-			then
-				echo "PLAYER WON"
-				break;
-			fi
-				
-
-		done
+		moveCount=$(( $moveCount+1 ))
+		if [ $play == 1 ]
+		then
+			userPlay=play
+			while [ $userPlay == play ] 
+			do
+				read -p "Enter the Cell Number" pos
+				position[$pos]=$2 
+				displayBoard
+				winner="$( determineWinnerTieOrChangeTurn $2 )"
+				userPlay=dontPlay				
+				if [ $winner == true ]
+				then
+					echo "PLAYER WON"
+					break
+				fi
+			done
+			play=0
+			
+		else
+			computerPlay="play"
+			while [ $computerPlay == play ] 
+			do
+				computerPosition="$( possibleWinningPosition $1 $2 $3 )"
+				if [ ${position[$computerPosition]} == $computerPosition ]
+				then
+					position[$computerPosition]=$3
+					displayBoard
+					winner="$( determineWinnerTieOrChangeTurn $3 )"
+					computerPlay=dontPlay
+					if [ $winner == true ]
+					then
+						echo "COMPUTER WON"
+						break
+					fi
+				fi
+			done  
+			play=1
+		fi
 		if [ $winner == true ]
 		then
 			break;
 		fi
-		computerPlay="play"
-		while [ $computerPlay == play ] 
-		do
-			computerPosition="$( possibleWinningPosition $1 $2 $3 )"
-			
-			if [ ${position[$computerPosition]} == $computerPosition ]
-			then
-				position[$computerPosition]=$3
-				displayBoard
-				winner1="$( determineWinnerTieOrChangeTurn $3 )"
-				computerPlay=dontPlay
-				if [ $winner1 == true ]
-				then
-					echo "COMPUTER WON"
-					break
-				fi
-			fi
-		done  
-		if [ $winner1 == true ]
-		then
-			break
-		fi
+		#if [ $winnerComputer == true ]
+		#then
+		#	break;
+		#fi
+		if [ $moveCount -gt 8 ]
+	        then
+	                echo "TIE"
+	                break;
+	        fi
 	done
+
+	#for (( counter=1; counter<10; counter++ ))
+	#do
+	#	userPlay="play"
+	#	while [ $userPlay == play ] && [ $counter -lt 10 ]
+	#	do
+	#		read -p "Enter the Cell Number" pos
+	#		position[$pos]=$2 
+	#		displayBoard
+	#		winner="$( determineWinnerTieOrChangeTurn $2 )"
+	#		userPlay=dontPlay				
+	#		if [ $winner == true ]
+	#		then
+	#			echo "PLAYER WON"
+	#			break
+	#		fi
+	#	done
+	#	if [ $winner == true ]
+	#	then
+	#		break
+	#	fi
+	#	if [ $counter == 9 ]
+	#	then
+	#		echo "TIE THE MATCH"
+	#		break
+	#	fi
+	#	computerPlay="play"
+	#	while [ $computerPlay == play ] && [ $counter -lt 10 ]
+	#	do
+	#		computerPosition="$( possibleWinningPosition $1 $2 $3 )"
+	#		if [ ${position[$computerPosition]} == $computerPosition ]
+	#		then
+	#			position[$computerPosition]=$3
+	#			displayBoard
+	#			winner1="$( determineWinnerTieOrChangeTurn $3 )"
+	#			computerPlay=dontPlay
+	#			if [ $winner1 == true ]
+	#			then
+	#				echo "COMPUTER WON"
+	#				break
+	#			fi
+	#		fi
+	#	done  
+	#	if [ $winner1 == true ]
+	#	then
+	#		break
+	#	fi
+	#done
 }
 
 function possibleWinningPosition(){
@@ -105,7 +162,7 @@ function possibleWinningPosition(){
 	diagonalPosition="$( winAtDiagonalPosition $1 $2 $3 )"
 	cornerPosition="$( takingCornerPosition $1 $2 $3 )"
 	centerPosition="$( takingCenterPosition $1 $2 $3 )"
-	sidePosition="$( takeSidePosition $1 $2 $3 )"
+	sidePosition="$( takingSidePosition $1 $2 $3 )"
 	if [[ $rowPosition -gt 0 ]]
 	then
 		winningPosition=$rowPosition
@@ -126,7 +183,8 @@ function possibleWinningPosition(){
 	then
 		winningPosition=$centerPosition
 		positionToReplace=0
-	else
+	elif [[ $sidePosition -gt 0 ]]
+	then
 		winningPosition=$sidePosition
 	fi
 	echo $winningPosition
