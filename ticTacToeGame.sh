@@ -96,64 +96,12 @@ function playGame()
 		then
 			break;
 		fi
-		#if [ $winnerComputer == true ]
-		#then
-		#	break;
-		#fi
 		if [ $moveCount -gt 8 ]
 	        then
 	                echo "TIE"
 	                break;
 	        fi
 	done
-
-	#for (( counter=1; counter<10; counter++ ))
-	#do
-	#	userPlay="play"
-	#	while [ $userPlay == play ] && [ $counter -lt 10 ]
-	#	do
-	#		read -p "Enter the Cell Number" pos
-	#		position[$pos]=$2 
-	#		displayBoard
-	#		winner="$( determineWinnerTieOrChangeTurn $2 )"
-	#		userPlay=dontPlay				
-	#		if [ $winner == true ]
-	#		then
-	#			echo "PLAYER WON"
-	#			break
-	#		fi
-	#	done
-	#	if [ $winner == true ]
-	#	then
-	#		break
-	#	fi
-	#	if [ $counter == 9 ]
-	#	then
-	#		echo "TIE THE MATCH"
-	#		break
-	#	fi
-	#	computerPlay="play"
-	#	while [ $computerPlay == play ] && [ $counter -lt 10 ]
-	#	do
-	#		computerPosition="$( possibleWinningPosition $1 $2 $3 )"
-	#		if [ ${position[$computerPosition]} == $computerPosition ]
-	#		then
-	#			position[$computerPosition]=$3
-	#			displayBoard
-	#			winner1="$( determineWinnerTieOrChangeTurn $3 )"
-	#			computerPlay=dontPlay
-	#			if [ $winner1 == true ]
-	#			then
-	#				echo "COMPUTER WON"
-	#				break
-	#			fi
-	#		fi
-	#	done  
-	#	if [ $winner1 == true ]
-	#	then
-	#		break
-	#	fi
-	#done
 }
 
 function possibleWinningPosition(){
