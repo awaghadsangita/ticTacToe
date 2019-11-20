@@ -105,6 +105,7 @@ function possibleWinningPosition(){
 	diagonalPosition="$( winAtDiagonalPosition $1 $2 $3 )"
 	cornerPosition="$( takingCornerPosition $1 $2 $3 )"
 	centerPosition="$( takingCenterPosition $1 $2 $3 )"
+	sidePosition="$( takeSidePosition $1 $2 $3 )"
 	if [[ $rowPosition -gt 0 ]]
 	then
 		winningPosition=$rowPosition
@@ -121,8 +122,12 @@ function possibleWinningPosition(){
 	then	
 		winningPosition=$cornerPosition
 		positionToReplace=0;
-	else
+	elif [[ $centerPosition -gt 0 ]]
+	then
 		winningPosition=$centerPosition
+		positionToReplace=0
+	else
+		winningPosition=$sidePosition
 	fi
 	echo $winningPosition
 }
@@ -130,7 +135,7 @@ function takingCornerPosition(){
 	local count=1;
 	local playerLetter=$2
 	local computerLetter=$3
-	positionToReply=1
+	positionToReply=0
 	for (( innerLoopCounter=1; innerLoopCounter<=2; innerLoopCounter++ ))
 	do
 		if [[ ${position[$count]} -ne $computerLetter ]] && [[ ${position[$count]} -ne $playerLetter ]]
@@ -146,7 +151,6 @@ function takingCornerPosition(){
 	echo $positionToReplay
 }
 function takingCenterPosition(){
-	local centerPosition
 	local playerLetter=$2
 	local computerLetter=$3
 	local positionChoice=0
@@ -155,6 +159,26 @@ function takingCenterPosition(){
 		positionChoice=5
 	fi
 	echo $positionChoice
+}
+function takingSidePosition(){
+	local playerLetter=$2
+	local computerLetter=$3
+	local sidePosition=0
+
+	if [[ ${position[2]} -ne $playerLetter ]] && [[ ${position[2]} -ne $computerLetter ]]
+	then
+		sidePosition=2
+	elif [[ ${position[4]} -ne $playerLetter ]] && [[ ${position[4]} -ne $computerLetter ]]
+	then
+		sidePosition=4
+	elif [[ ${position[6]} -ne $playerLetter ]] && [[ ${position[6]} -ne $computerLetter ]]
+	then
+		sidePosition=6
+	elif [[ ${position[8]} -ne $playerLetter ]] && [[ ${position[8]} -ne $computerLetter ]]
+	then
+		sidePosition=8
+	fi
+	echo $sidePosition
 }
 function determineWinnerTieOrChangeTurn()
 {
