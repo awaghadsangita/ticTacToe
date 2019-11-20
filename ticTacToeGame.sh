@@ -21,7 +21,6 @@ function displayBoard()
 		echo "|     |     |     |"
 		echo "|" ${position[$((i))]}"   | "${position[$((i+1))]}"   |" ${position[$((i+2))]}"   |"
 		echo "|_____|_____|_____|"
-#		echo "|     |     |     |"
 		i=$(($((i+1))+2))
 	done
 	echo "\n"
@@ -205,7 +204,7 @@ function winAtRowPosition(){
 		then
 			for (( innerLoopCounter=$row; innerLoopCounter<=$row+2; innerLoopCounter++ ))
 			do
-				if [[ ${position[$innerLoopCounter]} -ne $computerLetter ]]
+				if [[ ${position[$innerLoopCounter]} -ne $computerLetter ]] || [[ ${position[$innerLoopCounter]} -ne $playerLetter ]]
 				then
 					positionToReplace=$innerLoopCounter
 				fi
@@ -229,9 +228,9 @@ function WinnerAtColoumnPosition(){
 		then
 			for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
 			do
-				if [[ ${position[$column]} -ne $computerLetter ]]
+				if [[ ${position[$column]} -ne $computerLetter ]] || [[ ${position[$column]} -ne $playerLetter ]]
 				then
-					positionToReplace=$column
+					positionToReplace=$coloumn
 				fi
 				column=$(( $column+3 ))
 			done
@@ -250,7 +249,7 @@ function winAtDiagonalPosition(){
 	then
 		for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
 		do
-			if [[ ${position[$diagCount]} -ne $computerLetter ]]
+			if [[ ${position[$diagCount]} -ne $computerLetter ]] || [[ ${position[$diagCount]} -ne $playerLetter ]]
 			then
 				positionToReplace=$diagCount
 			fi
@@ -261,7 +260,7 @@ function winAtDiagonalPosition(){
 		for (( innerLoopCounter=1; innerLoopCounter<=3; innerLoopCounter++ ))
 		do
 			count=$(( $count+2 ))
-			if [[ ${position[$count]} -ne $computerLetter ]]
+			if [[ ${position[$count]} -ne $computerLetter ]] || [[ ${position[$count]} -ne $playerLetter ]]
 			then
 				positionToReplace=$count
 			fi
@@ -284,9 +283,4 @@ function tie()
 	echo $result4
 }
 
-
-function rowWinningPosition()
-{
-	echo $((RANDOM%9+1))
-}
 main
