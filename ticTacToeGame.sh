@@ -104,7 +104,7 @@ function playGame()
 
 function possibleWinningPosition(){
 	rowPosition="$( winAtRowPosition $1 $2 $3)"
-	columnPosition="$( WinnerAtColoumnPosition $1 $2 $3 )"
+	columnPosition="$( WinAtColoumnPosition $1 $2 $3 )"
 	diagonalPosition="$( winAtDiagonalPosition $1 $2 $3 )"
 
 	if [[ $rowPosition -gt 0 ]]
@@ -128,9 +128,9 @@ function possibleWinningPosition(){
 function determineWinnerTieOrChangeTurn()
 {
 	Turn=$1
-	rowResult="$( checkRow $1)"
-	columnResult="$( checkColumn $1)"
-	diagonalsResult="$( checkDiagonal $1  )"
+	rowResult="$( checkRowForWinner $1)"
+	columnResult="$( checkColumnForWinner $1)"
+	diagonalsResult="$( checkDiagonalForWinner $1  )"
 	flag=false	
 	if [ $rowResult == true ] || [ $columnResult == true ] || [ $diagonalsResult == true ]
 	then
@@ -138,7 +138,7 @@ function determineWinnerTieOrChangeTurn()
 	fi
 	echo $flag
 }
-function checkRow()
+function checkRowForWinner()
 {
 	local letter=$1
 	local rowCount=0;
@@ -156,7 +156,7 @@ function checkRow()
 	done
 	echo $winner
 }
-function checkColumn()
+function checkColumnForWinner()
 {
 	local letter=$1	
 	local columnCount=0;
@@ -172,7 +172,7 @@ function checkColumn()
 	done
 	echo $winner
 }
-function checkDiagonal()
+function checkDiagonalForWinner()
 {
 	local letter=$1
 	local winner=false
@@ -216,7 +216,7 @@ function winAtRowPosition(){
 	echo $positionToReplace
 }
 
-function WinnerAtColoumnPosition(){
+function WinAtColoumnPosition(){
 	local playerLetter=$2
 	local computerLetter=$3
 	local column=0;
@@ -269,7 +269,7 @@ function winAtDiagonalPosition(){
 	echo $positionToReplace
 }
 
-function tie()
+function checkForTie()
 {
 	i=0
 	result4=tie
