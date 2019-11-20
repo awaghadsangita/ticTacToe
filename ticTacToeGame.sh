@@ -106,23 +106,44 @@ function possibleWinningPosition(){
 	rowPosition="$( winAtRowPosition $1 $2 $3)"
 	columnPosition="$( WinAtColoumnPosition $1 $2 $3 )"
 	diagonalPosition="$( winAtDiagonalPosition $1 $2 $3 )"
-
+	cornerPosition="$( takingCornerPosition $1 $2 $3 )"
+	
 	if [[ $rowPosition -gt 0 ]]
 	then
 		winningPosition=$rowPosition
-		positionToReplace=0;
+		positionToReplace=0
 	elif [[ $columnPosition -gt 0 ]]
 	then
 		winningPosition=$columnPosition
-		positionToReplace=0;
+		positionToReplace=0
 	elif [[ $diagonalPosition -gt 0 ]]
 	then
 		winningPosition=$diagonalPosition
+		positionToReplace=0
+	#elif [[ $corner -gt 0 ]]
+	#then
+	else	
+		winningPosition=$cornerPosition
 		positionToReplace=0;
-	else
-		winningPosition=$((RANDOM%9+1))
 	fi
 	echo $winningPosition
+}
+function takingCornerPosition(){
+	local count=1;
+	local playerLetter=$2
+	local computerLetter=$3
+	for (( innerLoopCounter=1; innerLoopCounter<=2; innerLoopCounter++ ))
+	do
+		if [[ ${position[$count]} -ne $computerLetter ]] || [[ ${position[$count]} -ne $playerLetter ]]
+		then
+			positionToReplay=$count
+		elif [[ ${position[$count+2]} -ne $computerLetter ]] || [[ ${position[$count+2]} -ne $playerLetter ]]
+		then
+			positionToReplay=$(( $count+2 ))
+		fi
+		count=$(( $count+6 ))
+	done
+	echo $positionToReplay
 }
 
 function determineWinnerTieOrChangeTurn()
