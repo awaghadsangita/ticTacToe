@@ -6,6 +6,7 @@ declare -a position
 
 function initializedBoardArray()
 {
+
 	for(( i=1; i<=9; i++ ))
 	do
 		position[$i]=$i
@@ -21,9 +22,11 @@ function displayBoard()
 		echo "|     |     |     |"
 		echo "|" ${position[$((i))]}"   | "${position[$((i+1))]}"   |" ${position[$((i+2))]}"   |"
 		echo "|_____|_____|_____|"
+
 		i=$(($((i+1))+2))
 	done
 	echo "\n"
+
 }
 
 function main()
@@ -36,7 +39,6 @@ function main()
 	else
 		computerLetter=x
 	fi
-
 	firstTurn=$((RANDOM%2))
 	if [ $firstTurn -eq 1 ]
 	then
@@ -51,7 +53,6 @@ function main()
 function playGame()
 {
 	toContinue=0
-	turn=$2
 	computerPlay=play
 	userPlay=play
 	while [ $toContinue == 0 ]
@@ -69,16 +70,12 @@ function playGame()
 				echo "PLAYER WON"
 				break;
 			fi
-				
-
 		done
 		if [ $winner == true ]
 		then
 			break;
 		fi
-  
 	done
-
 }
 
 function determineWinnerTieOrChangeTurn()
@@ -147,7 +144,6 @@ function checkDiagonal()
 	echo $winner;
 
 }
-
 
 function tie()
 {
