@@ -3,7 +3,7 @@
 echo "******Wel-Come To TicTacToe Game******"
 
 declare -a position
-
+PLAYER=noplay
 function initializedBoardArray()
 {
 	for(( i=1; i<=9; i++ ))
@@ -39,10 +39,12 @@ function main()
 	if [ $firstTurn -eq 1 ]
 	then
 		firstTurn=$playerLetter
-		playGame $firstTurn $playerLetter $computerLetter
+		PLAYER="USER"
+		playGame $firstTurn $playerLetter $computerLetter $PLAYER
 	else
 		firstTurn=$computerLetter
-		playGame $firstTurn $playerLetter $computerLetter
+		PLAYER="COMPUTER"
+		playGame $firstTurn $playerLetter $computerLetter $PLAYER
 	fi
 
 }
@@ -50,17 +52,19 @@ function playGame()
 {
 	local playerLetter=$2
 	local computerLetter=$3
-	play=1
+	play=$4
+
 	while [ true ]
 	do
 		moveCount=$(( $moveCount+1 ))
-		if [ $play == 1 ]
+		if [ $play == "USER" ]
 		then
 			userPlay=play
 			while [ $userPlay == play ] 
 			do
-				read -p "Enter the Cell Number" pos
-				position[$pos]=$2 
+				read -p "Enter the Cell Number" userPosition
+				User_given_Position=$userPosition
+				position[$userPosition]=$2 
 				displayBoard
 				winner="$( determineWinnerTieOrChangeTurn $2 )"
 				userPlay=dontPlay				
@@ -70,13 +74,14 @@ function playGame()
 					break
 				fi
 			done
-			play=0
+			play="COMPUTER"
 			
 		else
 			computerPlay="play"
 			while [ $computerPlay == play ] 
 			do
 				computerPosition="$( possibleWinningPosition $1 $2 $3 )"
+				Computer_given_Position=$computerPosition
 				if [ ${position[$computerPosition]} == $computerPosition ]
 				then
 					position[$computerPosition]=$3
@@ -90,7 +95,7 @@ function playGame()
 					fi
 				fi
 			done  
-			play=1
+			play="USER"
 		fi
 		if [ $winner == true ]
 		then
@@ -111,26 +116,21 @@ function possibleWinningPosition(){
 	cornerPosition="$( takingCornerPosition $1 $2 $3 )"
 	centerPosition="$( takingCenterPosition $1 $2 $3 )"
 	sidePosition="$( takingSidePosition $1 $2 $3 )"
-	if [[ $rowPosition -gt 0 ]]
+	if  [[ $rowPosition -gt 0 ]]
 	then
 		winningPosition=$rowPosition
-		positionToReplace=0
 	elif [[ $columnPosition -gt 0 ]]
 	then
 		winningPosition=$columnPosition
-		positionToReplace=0
 	elif [[ $diagonalPosition -gt 0 ]]
 	then
 		winningPosition=$diagonalPosition
-		positionToReplace=0
 	elif [[ $cornerPosition -gt 0 ]]
 	then	
 		winningPosition=$cornerPosition
-		positionToReplace=0;
 	elif [[ $centerPosition -gt 0 ]]
 	then
 		winningPosition=$centerPosition
-		positionToReplace=0
 	elif [[ $sidePosition -gt 0 ]]
 	then
 		winningPosition=$sidePosition
